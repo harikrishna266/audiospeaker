@@ -3,7 +3,7 @@
         <md-icon><i class="material-icons icon-20">playlist_play</i>
         </md-icon>Audio Editor
     </md-toolbar>
-     <app-player *ngIf="realdata" (clearAllSelection)="clearAllReadSelection()" (newrecording)="pushtoRecording($event)" (timestampemit)="speechhightlight($event)"  [setTimeoutStart]="lastSelected" [audioUrl]='music' [soundtimestamps]="realdata" ></app-player>
+     <app-player #PlayerComponent *ngIf="realdata" (clearAllSelection)="clearAllReadSelection()" (newrecording)="pushtoRecording($event)" (timestampemit)="speechhightlight($event)"  [setTimeoutStart]="lastSelected" [audioUrl]='music' [soundtimestamps]="realdata" ></app-player>
      <div class="app-content">
         <md-card >
             <button md-raised-button color="primary" (click)="cut();" >Cut</button>

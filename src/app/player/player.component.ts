@@ -35,6 +35,7 @@ export class PlayerComponent {
     public playing:boolean = false; 
     public recording: boolean = false;
     public paused: boolean = false;
+    public audioLoader:boolean = false;
     constructor(public sanitizer: DomSanitizer ) {
         this.context = new (window.AudioContext || window.webkitAudioContext)(); // define audio context
     }
@@ -42,12 +43,12 @@ export class PlayerComponent {
         if(this.audioBuffer) {
             if(changes.soundtimestamps && changes.soundtimestamps.currentValue) {
                 this.soundtimestamps = changes.soundtimestamps.currentValue;
-                this.stop();
                 this.clearTimeOut();
             }
         }
         if(changes.audioUrl && changes.audioUrl.currentValue) {
-            this.loadAudio();
+            this.audioLoader = false;
+           this.loadAudio();
         }
         
     }
@@ -60,6 +61,7 @@ export class PlayerComponent {
             this.context.decodeAudioData(request.response,(buffer) => {
                 this.audioBuffer  = buffer.getChannelData(0);   
                 this.createNewEmptyBuffer();
+                this.audioLoader =true;
             });
         }
         request.send();
@@ -99,7 +101,6 @@ export class PlayerComponent {
         this.source.connect(this.analyser);
         this.source.buffer = this.PlayableBuffer;
         this.source.connect(this.context.destination);
-        console.log(this.context);
     }
     clearTimeOut() {
         for(let time of this.timeOutId) {
@@ -108,10 +109,12 @@ export class PlayerComponent {
         this.timeOutId = [];
     }
     stop() {
-        this.playing = false;
         this.nowBufferingIndex = 0;
         try {
-            this.source.stop();
+            if(this.playing) {
+                this.source.stop();
+                this.playing = false    
+            }   
             this.paused = false;
             this.context.resume();
             this.clearAllSelection.emit(1);

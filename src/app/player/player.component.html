@@ -1,16 +1,21 @@
+
 <div class="app-content">
     <md-card >
         <app-visualiser [analyser]="analyser"  ></app-visualiser> 
     </md-card>
 </div>
+{{nowBufferingIndex}}
 <div class="app-content">
-    <md-card >
-        <button md-raised-button color="primary" [disabled]="playing "  (click)="play()">Play</button>
+    <md-card *ngIf="audioLoader">
+        <button md-raised-button color="primary" [disabled]="playing"  (click)="play()">Play</button>
         <button md-raised-button color="primary" [disabled]="!playing"  (click)="stop()">Stop</button>
         <button md-raised-button color="primary" [disabled]="!playing || paused"  (click)="pause()">Pause</button>
         <button md-raised-button color="primary" [disabled]="!paused"  (click)="resume()">resume</button>
         <button md-raised-button color="primary" [disabled]="recording" (click)="record()">Record</button>
         <button md-raised-button color="primary" [disabled]="!recording" (click)="stopRecord()">Stop Record</button>
 
+    </md-card>
+    <md-card *ngIf="!audioLoader">
+        Audio loading.....
     </md-card>
 </div>
