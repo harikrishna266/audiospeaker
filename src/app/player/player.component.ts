@@ -34,6 +34,7 @@ export class PlayerComponent {
     public recorderArray: any = [];
     public playing:boolean = false; 
     public recording: boolean = false;
+    public paused: boolean = false;
     constructor(public sanitizer: DomSanitizer ) {
         this.context = new (window.AudioContext || window.webkitAudioContext)(); // define audio context
     }
@@ -111,6 +112,8 @@ export class PlayerComponent {
         this.nowBufferingIndex = 0;
         try {
             this.source.stop();
+            this.paused = false;
+            this.context.resume();
             this.clearAllSelection.emit(1);
             this.reorderBuffer();
             this.clearTimeOut();
@@ -160,10 +163,12 @@ export class PlayerComponent {
         this.source.start(); 
     }
     pause() {
+        this.paused = true;
         this.context.suspend();
         this.clearTimeOut();
     }
     resume() {
+        this.paused = false;
         this.context.resume();
         this.highlight(this.setTimeoutStart);
     }
