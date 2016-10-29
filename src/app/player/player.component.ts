@@ -17,6 +17,7 @@ export class PlayerComponent {
     @Input() soundtimestamps;
     @Output() timestampemit = new EventEmitter();
     @Output() newrecording = new EventEmitter();
+    @Output() clearAllSelection = new EventEmitter();
     @Input() setTimeoutStart;
     public context;
     public audioBuffer: any;
@@ -110,6 +111,7 @@ export class PlayerComponent {
         this.nowBufferingIndex = 0;
         try {
             this.source.stop();
+            this.clearAllSelection.emit(1);
             this.reorderBuffer();
             this.clearTimeOut();
             console.log('stoped');
