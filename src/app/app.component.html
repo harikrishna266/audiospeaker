@@ -5,15 +5,23 @@
     </md-toolbar>
      <app-player #PlayerComponent *ngIf="realdata" (clearAllSelection)="clearAllReadSelection()" (newrecording)="pushtoRecording($event)" (timestampemit)="speechhightlight($event)"  [setTimeoutStart]="lastSelected" [audioUrl]='music' [soundtimestamps]="realdata" ></app-player>
 <context-menu #basicMenu>
+  <template contextMenuItem (execute)="showMessage('playselection')">
+    Play Selection
+  </template>
   <template contextMenuItem (execute)="showMessage('cut')">
     cut
   </template>
   <template contextMenuItem (execute)="showMessage('copy')">
     copy
   </template>
-  <template contextMenuItem (execute)="showMessage('paste')">
-    paste
+  <template contextMenuItem (execute)="showMessage('paste ')">
+    Paste Before 
   </template>
+  <template contextMenuItem (execute)="showMessage('pasteAfter')">
+    Paste After
+  </template>
+
+
 </context-menu>
 
     <div class="app-content">

@@ -4,7 +4,6 @@
         <app-visualiser [analyser]="analyser"  ></app-visualiser> 
     </md-card>
 </div>
-{{nowBufferingIndex}}
 <div class="app-content">
     <md-card *ngIf="audioLoader">
         <button md-raised-button color="primary" [disabled]="playing"  (click)="play()">Play</button>
