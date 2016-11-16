@@ -30,10 +30,12 @@ export class WordComponent implements OnInit {
   select() {
       this.clickEvent.emit(this.data);
   }
-  mousedown() {
+  mousedown($event) {
+      if($event.which == 1)
       this.draggedStart.emit(this.data);  
   }
-  mouseup() {
+  mouseup($event) {
+    if($event.which == 1)
     this.draggedEnded.emit(this.data);  
   }
 

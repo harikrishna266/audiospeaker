@@ -9,6 +9,8 @@ import {PlayerComponent} from './player/player.component';
 import {VisualiserComponent} from './visualiser/visualiser.component';
 import { AngularFireModule } from 'angularfire2';
 import {ListdownloadComponent} from './listdownload/listdownload.component';
+import {ContextMenuServiceService} from './service/context-menu-service.service';
+import { ContextMenuModule } from 'angular2-contextmenu';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyCVuinX6esaVNRCrx5VIp9Uq5HRMF9ngLs",
@@ -32,9 +34,10 @@ export const firebaseConfig = {
     FormsModule,
     HttpModule,
     JsonpModule,
+    ContextMenuModule,
     MaterialModule.forRoot()
   ],
-  providers: [],
+  providers: [ContextMenuServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

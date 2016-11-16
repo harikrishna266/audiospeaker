@@ -6,6 +6,7 @@ import {ReadData} from './models/readData';
 import { Http, Headers,Response,RequestOptions} from '@angular/http';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import {Observable} from 'rxjs/Rx';
+import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import {Observable} from 'rxjs/Rx';
 })
 export class AppComponent {
     @ViewChild(PlayerComponent) PlayerComponent:PlayerComponent;
+    @ViewChild('basicMenu') public basicMenu: ContextMenuComponent;
     public realdata:Array<ReadData> = [];
     public drag:boolean = false;
     public dragStartIndex:number;
@@ -24,9 +26,25 @@ export class AppComponent {
     public recordings: any = [];
     public music: string = "./assets/audio.mp3";
     public audioRef: any;
-    constructor(public audioData: AudioDataService,private http: Http,public af: AngularFire) {
+    public items: any[] = [
+          { name: 'John', otherProperty: 'Foo' },
+          { name: 'Joe', otherProperty: 'Bar' },
+      ];
+    
+    constructor(public audioData: AudioDataService,private http: Http,public af: AngularFire,private contextMenuService: ContextMenuService) {
         this.audioRef = af.database.list('/audio');
         this.getAndArrageData();
+        
+    }
+    public onContextMenu($event: MouseEvent, item: any): void {
+        this.contextMenuService.show.next({ event: $event, item: item });
+        $event.preventDefault();
+      }
+    showMessage(ele) {
+        console.log(ele);
+        if(ele =="cut") this.cut();
+        if(ele =="paste") this.paste();
+
     }
     returnNewArray() {
          this.realdata = [];   
@@ -47,6 +65,9 @@ export class AppComponent {
     draggedStart(e) {
         this.drag = true;
         this.dragStartIndex = e;
+    }
+    showOptions() {
+        console.log('clicked ');
     }
     
     fileChange(event) {
@@ -100,7 +121,8 @@ export class AppComponent {
     erroruploading(err) {
         alert('error');
     }
-    draggedEnded(e) {
+    draggedEnded(e,$event) {
+        console.log($event);
         this.drag = false;
         this.dragEndIndex = e;
     }
@@ -124,6 +146,7 @@ export class AppComponent {
     }
     
     cut() {
+        console.log(this.dragEndIndex-this.dragStartIndex);
         let cliplength = this.dragEndIndex-this.dragStartIndex;
         this.pasteBin = this.realdata.splice(this.dragStartIndex,cliplength);
     }

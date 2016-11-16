@@ -4,22 +4,28 @@
         </md-icon>Audio Editor
     </md-toolbar>
      <app-player #PlayerComponent *ngIf="realdata" (clearAllSelection)="clearAllReadSelection()" (newrecording)="pushtoRecording($event)" (timestampemit)="speechhightlight($event)"  [setTimeoutStart]="lastSelected" [audioUrl]='music' [soundtimestamps]="realdata" ></app-player>
-     <div class="app-content">
-        <md-card >
-            <button md-raised-button color="primary" (click)="cut();" >Cut</button>
-            <button md-raised-button color="accent" (click)="paste();">Paste</button>
-        </md-card>
-    </div>
+<context-menu #basicMenu>
+  <template contextMenuItem (execute)="showMessage('cut')">
+    cut
+  </template>
+  <template contextMenuItem (execute)="showMessage('copy')">
+    copy
+  </template>
+  <template contextMenuItem (execute)="showMessage('paste')">
+    paste
+  </template>
+</context-menu>
 
     <div class="app-content">
         <form autocomplete="off" >
-        <md-card  *ngIf="realdata" class="wordHolder">
-            <p class="noselect">
-                <app-word  (selectAnotherWord)="selectAnotherWord($event)" [index]="i" (clickEvent)="clickEvent($event);" (selection)="selection(i)" (draggedEnded)="draggedEnded(i)" (draggedStart)="draggedStart(i)" *ngFor="let item of realdata; let i = index" [data]="item"> </app-word >
+        <md-card  *ngIf="realdata" class="wordHolder"  [contextMenu]="basicMenu"  [contextMenuSubject]="items">
+            <p class="noselect" (click)="showOptions()" >
+                <app-word  (selectAnotherWord)="selectAnotherWord($event)" [index]="i" (clickEvent)="clickEvent($event);" (selection)="selection(i)" (draggedEnded)="draggedEnded(i,$event)" (draggedStart)="draggedStart(i,$event)" *ngFor="let item of realdata; let i = index" [data]="item"> </app-word >
             </p>
         </md-card>
         </form>
     </div>
+
     <md-sidenav align="end" mode="side" opened>
         <md-tab-group>
             <md-tab>
