@@ -37,7 +37,9 @@ export class AppComponent {
     }
     showMessage(ele) {
         if(ele =="cut") this.cut();
-        if(ele =="paste") this.paste();
+        if(ele =="pasteBefore") this.paste('before');
+        if(ele =="pasteAfter") this.paste('after');
+
         if(ele =="playselection") this.playselection();
 
     }
@@ -149,9 +151,12 @@ export class AppComponent {
         this.pasteBin = this.realdata.splice(this.dragStartIndex,cliplength);
     }
     
-    paste() {
+    paste(where) {
+        if(where =='after') let startFrom = this.dragStartIndex+1;
+        else let startFrom = this.dragStartIndex;
+
         for(let i=this.pasteBin.length-1;i>=0;i--)  {
-            this.realdata.splice(this.dragStartIndex+1,0,this.pasteBin[i]);
+            this.realdata.splice(startFrom,0,this.pasteBin[i]);
         }
         this.PlayerComponent.stop();
         this.clearAllReadSelection();
