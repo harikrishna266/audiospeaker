@@ -133,7 +133,16 @@ export class PlayerComponent {
     }
     playselection() {
         let startTime = this.soundtimestamps[this.dragStartIndex-1]['time'];
-        this.play(startTime,0,this.dragStartIndex);
+        let EndTime = this.soundtimestamps[this.dragEndIndex+1]['time'];
+        let EndTimeForTimeer = this.soundtimestamps[this.dragEndIndex]['time'];
+        let StartTimeForTimeer = this.soundtimestamps[this.dragStartIndex]['time'];
+        let duration = EndTime - startTime;
+        let highlightEndTime = ((EndTimeForTimeer - StartTimeForTimeer));
+        setTimeout(() => {
+            this.stop();
+        },highlightEndTime*1000)
+        this.play(startTime,0,this.dragStartIndex,duration);
+        
 
     }
     highlight(startFrom) {
@@ -167,11 +176,11 @@ export class PlayerComponent {
             this.newrecording.emit(data)
         })
     }
-    play(start=0,end=0,highlight=0) {
+    play(start=0,end=0,highlight=0,duration=null) {
         console.log(this.soundtimestamps);
         this.playing = true;
         this.highlight(highlight);
-        this.source.start(0,start); 
+        this.source.start(0,start,duration); 
     }
     pause() {
         this.paused = true;
