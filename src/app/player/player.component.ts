@@ -15,6 +15,8 @@ declare const navigator:any;
 export class PlayerComponent {
     @Input() audioUrl;
     @Input() soundtimestamps;
+    @Input() dragStartIndex;
+    @Input() dragEndIndex;
     @Output() timestampemit = new EventEmitter();
     @Output() newrecording = new EventEmitter();
     @Output() clearAllSelection = new EventEmitter();
@@ -129,6 +131,11 @@ export class PlayerComponent {
     starthightlighting(track) {
         track.obser.emit(track.track.time);
     }
+    playselection() {
+        let startTime = this.soundtimestamps[this.dragStartIndex-1]['time'];
+        this.play(startTime,0,this.dragStartIndex);
+
+    }
     highlight(startFrom) {
         let k = startFrom;
         let len = 0;
@@ -160,10 +167,11 @@ export class PlayerComponent {
             this.newrecording.emit(data)
         })
     }
-    play() {
+    play(start=0,end=0,highlight=0) {
+        console.log(this.soundtimestamps);
         this.playing = true;
-        this.highlight(0);
-        this.source.start(); 
+        this.highlight(highlight);
+        this.source.start(0,start); 
     }
     pause() {
         this.paused = true;

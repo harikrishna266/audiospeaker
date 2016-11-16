@@ -16,7 +16,6 @@ import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
 })
 export class AppComponent {
     @ViewChild(PlayerComponent) PlayerComponent:PlayerComponent;
-    @ViewChild('basicMenu') public basicMenu: ContextMenuComponent;
     public realdata:Array<ReadData> = [];
     public drag:boolean = false;
     public dragStartIndex:number;
@@ -36,14 +35,10 @@ export class AppComponent {
         this.getAndArrageData();
         
     }
-    public onContextMenu($event: MouseEvent, item: any): void {
-        this.contextMenuService.show.next({ event: $event, item: item });
-        $event.preventDefault();
-      }
     showMessage(ele) {
-        console.log(ele);
         if(ele =="cut") this.cut();
         if(ele =="paste") this.paste();
+        if(ele =="playselection") this.playselection();
 
     }
     returnNewArray() {
@@ -60,6 +55,9 @@ export class AppComponent {
             let elem = (Number($event.ind)).toFixed();
             document.getElementById(elem).focus();
         }
+    }
+    playselection() {
+        this.PlayerComponent.playselection();
     }
     
     draggedStart(e) {
