@@ -180,7 +180,10 @@ export class PlayerComponent {
         console.log(this.soundtimestamps);
         this.playing = true;
         this.highlight(highlight);
-        this.source.start(0,start,duration); 
+        if(duration)
+            this.source.start(0,start,duration); 
+        else
+            this.source.start(0,start); 
     }
     pause() {
         this.paused = true;

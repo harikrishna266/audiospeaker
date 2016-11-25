@@ -55,11 +55,9 @@ export class AppComponent {
         console.log(this.history.history.length);
         if(this.history.history.length>2) {
             this.realdata = this.history.history[this.history.history.length-2];
-            this.history.removeLastentry();
         } 
         if(this.history.history.length==2) {
             this.realdata = this.history.history[0];
-            this.history.removeLastentry();
         }
     }
     clickEvent(data: ReadData) {
