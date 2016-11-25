@@ -51,7 +51,7 @@ export class AppComponent {
     }
     breakline() {
         console.log(this.dragStartIndex);
-        let emptyarray = new ReadData('' ,0,0,false,false,true,true);
+        let emptyarray = new ReadData('' ,0,0,false,false,false,true);
         this.realdata = [...this.realdata.slice(0, this.dragStartIndex+1),emptyarray,...this.realdata.slice(this.dragStartIndex+1)];
     }
 
