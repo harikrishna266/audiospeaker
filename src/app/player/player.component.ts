@@ -132,7 +132,7 @@ export class PlayerComponent {
         track.obser.emit(track.track.time);
     }
     playselection() {
-        let startTime = this.soundtimestamps[this.dragStartIndex-1]['time'];
+        let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
         let EndTime = this.soundtimestamps[this.dragEndIndex+1]['time'];
         let EndTimeForTimeer = this.soundtimestamps[this.dragEndIndex]['time'];
         let StartTimeForTimeer = this.soundtimestamps[this.dragStartIndex]['time'];
