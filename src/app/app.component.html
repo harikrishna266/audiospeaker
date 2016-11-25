@@ -59,7 +59,7 @@
             <md-tab>
                 <template md-tab-label>Audio</template>
                 <template md-tab-content>
-                    <app-listdownload></app-listdownload>
+                    <app-listdownload (loadNewAudio)="loadAudioFile($event);"></app-listdownload>
                 </template>
             </md-tab>
             

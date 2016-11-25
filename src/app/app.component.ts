@@ -24,7 +24,8 @@ export class AppComponent {
     public pasteBin:any;
     public lastSelected: any;
     public recordings: any = [];
-    public music: string = "./assets/audio.mp3";
+    
+    public music: string;
     public audioRef: any;
     public items: any[] = [
           { name: 'John', otherProperty: 'Foo' },
@@ -37,7 +38,7 @@ export class AppComponent {
         public history:HistoryService,
         private contextMenuService: ContextMenuService) {
         this.audioRef = af.database.list('/audio');
-        this.getAndArrageData();
+        //this.c();
         
     }
     showMessage(ele) {
@@ -117,7 +118,6 @@ export class AppComponent {
         return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
     }
     rawpost(data:any) {
-
         let path = 'https://apis.voicebase.com/v2-beta/media';
         let form  = document.forms.namedItem("fileinfo");
         let Data = new FormData(form);
@@ -226,6 +226,12 @@ export class AppComponent {
     }
     createArray(newrow) {
         this.realdata = [...this.realdata,newrow];
+    }
+    loadAudioFile($event){
+       // this.music = 'http://54.226.118.162:8000/'+$event.file.name;
+        this.music = './assets/audio.mp3';
+
+        this.getAndArrageData();
     }
     getAndArrageData() {
         for (let i = 0, len = this.audioData.audioData.words.length; i < len; i += 1) { 

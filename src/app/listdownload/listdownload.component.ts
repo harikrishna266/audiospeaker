@@ -4,6 +4,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {VisualiserComponent} from '../visualiser/visualiser.component';
 import { Http, Headers,Response,RequestOptions} from '@angular/http';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import {AudioDataService} from '../audio-data.service';
 
 
 declare const Recorder: any;
@@ -15,9 +16,10 @@ declare const navigator:any;
   styleUrls: ['listdownload.component.css']
 })
 export class ListdownloadComponent {
-
+    public loader:boolean = false;
     public audioRef: any;
-    constructor(private http: Http,public af: AngularFire) {
+    @Output() loadNewAudio = new EventEmitter();
+    constructor(private http: Http,public af: AngularFire, public audioSer: AudioDataService) {
         this.audioRef = af.database.list('/audio');
     }
 
@@ -25,6 +27,7 @@ export class ListdownloadComponent {
         let url ="https://apis.voicebase.com/v2-beta/media";
         let headers = new Headers({ 'Accept': 'application/json' ,
                                     'Authorization':'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJlMTdlNDlhMC1jNDEwLTQ4MjAtOTg5ZS05YWJkMGI2ZGRiMTciLCJ1c2VySWQiOiJhdXRoMHw1ODBmOTFjN2ExYmMyY2MwNjZjYWEzYjciLCJvcmdhbml6YXRpb25JZCI6IjZkMzMwNmEwLWI2Y2ItMGYwYy1mMTcyLWVmMWY3YmJlNjE2ZCIsImVwaGVtZXJhbCI6ZmFsc2UsImlhdCI6MTQ3NzQ5NTM3MjMwMSwiaXNzIjoiaHR0cDovL3d3dy52b2ljZWJhc2UuY29tIn0.Xl07d9oevEqBpH0edSdG_mrdkMOzaSPW4LA0ktBfEGY'});
+         this.loader = true;
         let fileList: FileList = event.target.files;
             if(fileList.length > 0) {
                 let file: File = fileList[0];
@@ -32,6 +35,7 @@ export class ListdownloadComponent {
                 Promise.all(audioPromise)
                     .then(res => {
                         let data: any = res[0];
+                        this.loader = false;
                         data.name = res[1];
                         this.saveFileDetailsFirebase(data);
                     })
@@ -42,7 +46,7 @@ export class ListdownloadComponent {
         this.audioRef.push(res);
     }
     uploadToServer(data: any) {
-        let path = 'http://54.226.118.162:8000';
+        let path  = 'http://54.226.118.162:8000';
         let form  = document.forms.namedItem("fileinfo");
         let Data = new FormData(form);
         return new Promise(function (res,rej) {
@@ -63,19 +67,20 @@ export class ListdownloadComponent {
     }
     loadAudio(audio) {
         this.getAudioJson(audio)
-            .then(res =>{
-                console.log(res);
+            .then((res:any) =>{
+               this.audioSer.addData(res.audio.transcript.words);
+               this.loadNewAudio.next(res);
             })
     }
     getAudioJson(audio) {
-
         let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaId}/transcripts/latest`;
         return new Promise(function (res,rej) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        res(JSON.parse(xhr.response))
+                        let response = {audio:JSON.parse(xhr.response),file:audio}
+                        res(response);
                     }
                     else {
                          rej(xhr.response);    
@@ -89,21 +94,28 @@ export class ListdownloadComponent {
     }
     checkStatus(audio) {
         let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaId}/`;
-        return new Promise(function (res,rej) {
+        new Promise(function (res,rej) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        res(JSON.parse(xhr.response))
+                        let json = JSON.parse(xhr.response);
+                        json.status = "finished";
+                        res(json)
                     }
                     else {
-                         rej(xhr.response);    
+                        let json = JSON.parse(xhr.response);
+                         rej(json);    
                     }
                 }
             };
             xhr.open('GET', path, true);
             xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJlMTdlNDlhMC1jNDEwLTQ4MjAtOTg5ZS05YWJkMGI2ZGRiMTciLCJ1c2VySWQiOiJhdXRoMHw1ODBmOTFjN2ExYmMyY2MwNjZjYWEzYjciLCJvcmdhbml6YXRpb25JZCI6IjZkMzMwNmEwLWI2Y2ItMGYwYy1mMTcyLWVmMWY3YmJlNjE2ZCIsImVwaGVtZXJhbCI6ZmFsc2UsImlhdCI6MTQ3NzQ5NTM3MjMwMSwiaXNzIjoiaHR0cDovL3d3dy52b2ljZWJhc2UuY29tIn0.Xl07d9oevEqBpH0edSdG_mrdkMOzaSPW4LA0ktBfEGY');
             xhr.send();
+        }).then(res => {
+            this.af.database.object(`audio/${audio.$key}/`)
+                .update(res);
+                
         });
     }
     rawpost(data:any) {

@@ -57,6 +57,7 @@ export class PlayerComponent {
 
     loadAudio() {
         var request = new XMLHttpRequest();
+        console.log(this.audioUrl);
         request.open('GET', this.audioUrl, true);
         request.responseType = 'arraybuffer';
         request.onload = () => {
@@ -72,12 +73,15 @@ export class PlayerComponent {
         this.createNewEmptyBuffer();
     }
     getBufferLength() {
+        console.log(this.soundtimestamps)
+        if(!this.soundtimestamps) return;
         let lastElement  = this.soundtimestamps[this.soundtimestamps.length-1];
         return Math.ceil(Number(lastElement.time)+ Number(lastElement.duration));
     }
     
     createNewEmptyBuffer() {
         let audioLength     = this.getBufferLength();
+        console.log(1, this.context.sampleRate*audioLength,this.context.sampleRate);
         this.PlayableBuffer = this.context.createBuffer(1, this.context.sampleRate*audioLength,this.context.sampleRate);
         this.LoadDataIntoEmptyBuffer();
     }
