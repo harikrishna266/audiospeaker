@@ -33,7 +33,7 @@
     </div>
 
     <md-sidenav align="end" mode="side" opened>
-        <md-tab-group>
+        <md-tab-group style="height: 200px">
             <md-tab>
                 <template md-tab-label>Download</template>
                 <template md-tab-content>
@@ -52,6 +52,16 @@
             </md-tab>
             
         </md-tab-group>
+        <md-tab-group>
+            <md-tab>
+                <template md-tab-label>History</template>
+                <template md-tab-content>
+                    <md-list *ngFor="let history of history.history;let i=index" [style.background]="'lightblue'">
+                      history
+                    </md-list>
+                </template>
+            </md-tab>
+          </md-tab-group>
     </md-sidenav>
 
 </md-sidenav-layout>

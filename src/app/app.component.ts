@@ -7,6 +7,7 @@ import { Http, Headers,Response,RequestOptions} from '@angular/http';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import {Observable} from 'rxjs/Rx';
 import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
+import {HistoryService} from './service/history.service';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,11 @@ export class AppComponent {
           { name: 'Joe', otherProperty: 'Bar' },
       ];
     
-    constructor(public audioData: AudioDataService,private http: Http,public af: AngularFire,private contextMenuService: ContextMenuService) {
+    constructor(public audioData: AudioDataService,
+        private http: Http,
+        public af: AngularFire,
+        public history:HistoryService,
+        private contextMenuService: ContextMenuService) {
         this.audioRef = af.database.list('/audio');
         this.getAndArrageData();
         
@@ -39,14 +44,24 @@ export class AppComponent {
         if(ele =="cut") this.cut();
         if(ele =="pasteBefore") this.paste('before');
         if(ele =="pasteAfter") this.paste('after');
-
+        if(ele =="undo") this.undo();
         if(ele =="playselection") this.playselection();
 
     }
     returnNewArray() {
          this.realdata = [];   
     }
-    
+    undo() {
+        console.log(this.history.history.length);
+        if(this.history.history.length>2) {
+            this.realdata = this.history.history[this.history.history.length-2];
+            this.history.removeLastentry();
+        } 
+        if(this.history.history.length==2) {
+            this.realdata = this.history.history[0];
+            this.history.removeLastentry();
+        }
+    }
     clickEvent(data: ReadData) {
         data.hightlight = !data.hightlight; 
         this.selection(0,1);//clear all selection
@@ -152,16 +167,18 @@ export class AppComponent {
     }
     
     paste(where) {
-        if(where =='after') let startFrom = this.dragStartIndex+1;
-        else let startFrom = this.dragStartIndex;
+        let startFrom;
+        if(where =='after')  startFrom = this.dragStartIndex+1;
+        else  startFrom = this.dragStartIndex;
 
         for(let i=this.pasteBin.length-1;i>=0;i--)  {
             this.realdata.splice(startFrom,0,this.pasteBin[i]);
         }
         this.PlayerComponent.stop();
+        this.history.pushRow(this.realdata);
         this.clearAllReadSelection();
-
     }
+
     clearAllReadSelection() {
         let time = 0;
         for (let i = 1, len = this.realdata.length; i < len; i += 1) { 
@@ -207,6 +224,7 @@ export class AppComponent {
             this.checkBlankAudio(this.audioData.audioData.words[i-1],this.audioData.audioData.words[i],this.audioData.audioData.words[i+1]);     
             this.createArray(new ReadData(this.audioData.audioData.words[i]['name'] ,this.audioData.audioData.words[i]['duration'],this.audioData.audioData.words[i]['time'],false,false,this.audioData.audioData.words[i]['time']));
          }
+         this.history.pushRow(this.realdata);
     }
 
 }

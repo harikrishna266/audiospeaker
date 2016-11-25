@@ -9,7 +9,7 @@ import {PlayerComponent} from './player/player.component';
 import {VisualiserComponent} from './visualiser/visualiser.component';
 import { AngularFireModule } from 'angularfire2';
 import {ListdownloadComponent} from './listdownload/listdownload.component';
-import {ContextMenuServiceService} from './service/context-menu-service.service';
+import {HistoryService} from './service/history.service';
 import { ContextMenuModule } from 'angular2-contextmenu';
 
 export const firebaseConfig = {
@@ -37,7 +37,7 @@ export const firebaseConfig = {
     ContextMenuModule,
     MaterialModule.forRoot()
   ],
-  providers: [ContextMenuServiceService],
+  providers: [HistoryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
