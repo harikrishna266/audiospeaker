@@ -46,8 +46,15 @@ export class AppComponent {
         if(ele =="pasteAfter") this.paste('after');
         if(ele =="undo") this.undo();
         if(ele =="playselection") this.playselection();
-
+        if(ele =="playfrom") this.playfrom();
+        if(ele =="breakline") this.breakline();
     }
+    breakline() {
+        console.log(this.dragStartIndex);
+        let emptyarray = new ReadData('' ,0,0,false,false,true,true);
+        this.realdata = [...this.realdata.slice(0, this.dragStartIndex+1),emptyarray,...this.realdata.slice(this.dragStartIndex+1)];
+    }
+
     returnNewArray() {
          this.realdata = [];   
     }
@@ -73,6 +80,9 @@ export class AppComponent {
     }
     playselection() {
         this.PlayerComponent.playselection();
+    }
+    playfrom() {
+        this.PlayerComponent.playFromSelection();
     }
     
     draggedStart(e) {
@@ -130,6 +140,7 @@ export class AppComponent {
     }
     saveFileDetailsFirebase(res) {
         this.audioRef.push(res);
+        this.realdata = [...this.realdata.slice(0, 1),this.realdata[1],...this.realdata.slice(2)];
     }
     erroruploading(err) {
         alert('error');
@@ -168,7 +179,6 @@ export class AppComponent {
         let startFrom;
         if(where =='after')  startFrom = this.dragStartIndex+1;
         else  startFrom = this.dragStartIndex;
-
         for(let i=this.pasteBin.length-1;i>=0;i--)  {
             this.realdata.splice(startFrom,0,this.pasteBin[i]);
         }

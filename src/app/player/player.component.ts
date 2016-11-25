@@ -142,8 +142,10 @@ export class PlayerComponent {
             this.stop();
         },highlightEndTime*1000)
         this.play(startTime,0,this.dragStartIndex,duration);
-        
-
+    }
+    playFromSelection() {
+        let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
+        this.play(startTime,0,this.dragStartIndex);
     }
     highlight(startFrom) {
         let k = startFrom;
@@ -177,7 +179,6 @@ export class PlayerComponent {
         })
     }
     play(start=0,end=0,highlight=0,duration=null) {
-        console.log(this.soundtimestamps);
         this.playing = true;
         this.highlight(highlight);
         if(duration)

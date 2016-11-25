@@ -8,11 +8,17 @@
           <template contextMenuItem (execute)="showMessage('playselection')">
             Play Selection
           </template>
+          <template contextMenuItem (execute)="showMessage('playfrom')">
+            Play from here
+          </template>
           <template contextMenuItem (execute)="showMessage('cut')">
             cut
           </template>
           <template contextMenuItem (execute)="showMessage('pasteBefore')">
             Paste Before 
+          </template>
+          <template contextMenuItem (execute)="showMessage('breakline')">
+            Break line
           </template>
           <template contextMenuItem (execute)="showMessage('pasteAfter')">
             Paste After
@@ -26,7 +32,13 @@
         <form autocomplete="off" >
         <md-card  *ngIf="realdata" class="wordHolder"  [contextMenu]="basicMenu"  [contextMenuSubject]="items">
             <p class="noselect" (click)="showOptions()" >
-                <app-word  (selectAnotherWord)="selectAnotherWord($event)" [index]="i" (clickEvent)="clickEvent($event);" (selection)="selection(i)" (draggedEnded)="draggedEnded(i,$event)" (draggedStart)="draggedStart(i,$event)" *ngFor="let item of realdata; let i = index" [data]="item"> </app-word >
+            <template ngFor let-item [ngForOf]="realdata" let-i="index">
+                <app-word  *ngIf="item.empty==false" (selectAnotherWord)="selectAnotherWord($event)" [index]="i" (clickEvent)="clickEvent($event);" (selection)="selection(i)" (draggedEnded)="draggedEnded(i,$event)" (draggedStart)="draggedStart(i,$event)" [data]="item"> </app-word >
+                <div *ngIf="item.empty==true" style="clear: both">
+                </div>
+                <div *ngIf="item.empty==true" style="clear: both">
+                </div>
+                </template>
             </p>
         </md-card>
         </form>
