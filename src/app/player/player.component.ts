@@ -73,7 +73,6 @@ export class PlayerComponent {
         this.createNewEmptyBuffer();
     }
     getBufferLength() {
-        console.log(this.soundtimestamps)
         if(!this.soundtimestamps) return;
         let lastElement  = this.soundtimestamps[this.soundtimestamps.length-1];
         return Math.ceil(Number(lastElement.time)+ Number(lastElement.duration));

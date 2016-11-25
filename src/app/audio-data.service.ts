@@ -8,14 +8,16 @@ export class AudioDataService {
 
   addData(data) {
     for(let d of data ) {
-      let dur = d.e - d.s;
+      let dur = (d.e - d.s)/1000;
+      let start = d.s/1000;
       this.audioData.words.push({
         "duration": dur, 
         "confidence": d.c,
         "name": d.w, 
-        "time": d.s
+        "time": start
       })
     }
+    console.log(this.audioData);
     
   }
 
