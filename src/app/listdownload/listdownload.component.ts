@@ -37,7 +37,7 @@ export class ListdownloadComponent {
                         let data: any = res[0];
                         this.loader = false;
                         data.name = res[1];
-                        this.saveFileDetailsFirebase(data);
+                        this.saveFileDetailsFirebase({mediaid: data.mediaId,name: data.name,status: data.status});
                     })
             }
     }
@@ -66,13 +66,22 @@ export class ListdownloadComponent {
         });
     }
     loadAudio(audio) {
-        this.getAudioJson(audio)
-            .then((res:any) =>{
-               this.audioSer.addData(res.audio.transcript.words);
+        this.getTimeStampFromFirebase(audio)
+            .subscribe((res:any) =>{
+               this.audioSer.addData(res);
                this.loadNewAudio.next(res);
             })
     }
+    getTimeStampFromFirebase(audio) {
+        // return this.af.database.list('/words',{
+        //                                       query: {
+        //                                         orderByValue: 'id',
+        //                                         equalTo: "1234"
+        //                                       }
+        //                                     });
+    }
     getAudioJson(audio) {
+        
         let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaId}/transcripts/latest`;
         return new Promise(function (res,rej) {
             var xhr = new XMLHttpRequest();
@@ -100,7 +109,6 @@ export class ListdownloadComponent {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         let json = JSON.parse(xhr.response);
-                        json.status = "finished";
                         res(json)
                     }
                     else {
@@ -112,9 +120,18 @@ export class ListdownloadComponent {
             xhr.open('GET', path, true);
             xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJlMTdlNDlhMC1jNDEwLTQ4MjAtOTg5ZS05YWJkMGI2ZGRiMTciLCJ1c2VySWQiOiJhdXRoMHw1ODBmOTFjN2ExYmMyY2MwNjZjYWEzYjciLCJvcmdhbml6YXRpb25JZCI6IjZkMzMwNmEwLWI2Y2ItMGYwYy1mMTcyLWVmMWY3YmJlNjE2ZCIsImVwaGVtZXJhbCI6ZmFsc2UsImlhdCI6MTQ3NzQ5NTM3MjMwMSwiaXNzIjoiaHR0cDovL3d3dy52b2ljZWJhc2UuY29tIn0.Xl07d9oevEqBpH0edSdG_mrdkMOzaSPW4LA0ktBfEGY');
             xhr.send();
-        }).then(res => {
-            this.af.database.object(`audio/${audio.$key}/`)
+        }).then((res: any) => {
+            if(res.media.status =="finished") {
+                this.af.database.object(`audio/${audio.$key}/`)
                 .update(res);
+                this.getAudioJson(audio)
+                    .then((timestamp: any) => {
+                        let savedata: any;
+                        savedata = {word:timestamp.audio.transcript.words, id: audio.$key}
+                        this.af.database.list(`words/`).push(savedata);
+                    }) 
+            }
+            
                 
         });
     }

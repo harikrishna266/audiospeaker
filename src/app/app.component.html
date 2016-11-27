@@ -34,10 +34,8 @@
             <p class="noselect" (click)="showOptions()" >
             <template ngFor let-item [ngForOf]="realdata" let-i="index">
                 <app-word  *ngIf="item.empty==false" (selectAnotherWord)="selectAnotherWord($event)" [index]="i" (clickEvent)="clickEvent($event);" (selection)="selection(i)" (draggedEnded)="draggedEnded(i,$event)" (draggedStart)="draggedStart(i,$event)" [data]="item"> </app-word >
-                <div *ngIf="item.empty==true" style="clear: both">
-                </div>
-                <div *ngIf="item.empty==true" style="clear: both">
-                </div>
+                <div *ngIf="item.empty==true" style="clear: both;height:20px">
+                  </div>
                 </template>
             </p>
         </md-card>
@@ -45,7 +43,14 @@
     </div>
 
     <md-sidenav align="end" mode="side" opened>
-        <md-tab-group style="height: 200px">
+        <md-tab-group >
+            
+            <md-tab>
+                <template md-tab-label>Audio</template>
+                <template md-tab-content>
+                    <app-listdownload (loadNewAudio)="loadAudioFile($event);"></app-listdownload>
+                </template>
+            </md-tab>
             <md-tab>
                 <template md-tab-label>Download</template>
                 <template md-tab-content>
@@ -56,15 +61,9 @@
                     </md-list>
                 </template>
             </md-tab>
-            <md-tab>
-                <template md-tab-label>Audio</template>
-                <template md-tab-content>
-                    <app-listdownload (loadNewAudio)="loadAudioFile($event);"></app-listdownload>
-                </template>
-            </md-tab>
             
         </md-tab-group>
-        <md-tab-group>
+        <!-- <md-tab-group>
             <md-tab>
                 <template md-tab-label>History</template>
                 <template md-tab-content>
@@ -73,7 +72,7 @@
                     </md-list>
                 </template>
             </md-tab>
-          </md-tab-group>
+          </md-tab-group> -->
     </md-sidenav>
 
 </md-sidenav-layout>

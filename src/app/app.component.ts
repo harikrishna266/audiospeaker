@@ -228,8 +228,8 @@ export class AppComponent {
         this.realdata = [...this.realdata,newrow];
     }
     loadAudioFile($event){
-       // this.music = 'http://54.226.118.162:8000/'+$event.file.name;
-        this.music = './assets/audio.mp3';
+        this.music = 'http://54.226.118.162:8000/'+$event.file.name;
+       // this.music = './assets/audio.mp3';
 
         this.getAndArrageData();
     }
