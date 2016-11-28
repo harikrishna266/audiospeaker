@@ -17,8 +17,7 @@ export class AudioDataService {
         "time": start
       })
     }
-    console.log(this.audioData);
-    
   }
+
 
 }

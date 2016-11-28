@@ -68,17 +68,12 @@ export class ListdownloadComponent {
     loadAudio(audio) {
         this.getTimeStampFromFirebase(audio)
             .subscribe((res:any) =>{
-               this.audioSer.addData(res);
-               this.loadNewAudio.next(res);
+               this.audioSer.addData(res.word);
+               this.loadNewAudio.next(audio);
             })
     }
     getTimeStampFromFirebase(audio) {
-        // return this.af.database.list('/words',{
-        //                                       query: {
-        //                                         orderByValue: 'id',
-        //                                         equalTo: "1234"
-        //                                       }
-        //                                     });
+        return this.af.database.object(`/words/${audio.$key}`);
     }
     getAudioJson(audio) {
         
@@ -128,7 +123,7 @@ export class ListdownloadComponent {
                     .then((timestamp: any) => {
                         let savedata: any;
                         savedata = {word:timestamp.audio.transcript.words, id: audio.$key}
-                        this.af.database.list(`words/`).push(savedata);
+                        this.af.database.object(`words/${audio.$key}`).set(savedata);
                     }) 
             }
             
