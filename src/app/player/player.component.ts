@@ -142,6 +142,7 @@ export class PlayerComponent {
         setTimeout(() => {
             this.stop();
         },highlightEndTime*1000)
+        console.log(highlightEndTime*1000);
         this.play(startTime,0,this.dragStartIndex,duration);
     }
     playFromSelection() {

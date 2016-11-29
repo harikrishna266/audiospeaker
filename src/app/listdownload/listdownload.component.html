@@ -17,8 +17,8 @@
     <md-list-item  class="listaudio" *ngFor="let red of audioRef|async; let i =index" >
         <p md-line  > {{red.name}}</p>
         <p md-line>  
-            <button md-raised-button color="primary" *ngIf="red.status=='finished'" (click)="checkStatus(red);" >check status</button>
-            <button md-raised-button color="primary" *ngIf="red.status=='finisheds'" (click)="loadAudio(red);" >Load Audio</button>
+            <button md-raised-button color="primary" *ngIf="red.status=='accepted'" (click)="checkStatus(red);" >check status</button>
+            <button md-raised-button color="primary" *ngIf="red.status=='finished'" (click)="loadAudio(red);" >Load Audio</button>
         </p>
 
     </md-list-item> 

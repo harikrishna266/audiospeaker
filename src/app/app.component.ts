@@ -186,9 +186,7 @@ export class AppComponent {
         this.history.pushRow(this.realdata);
         this.clearAllReadSelection();
     }
-    reloadData() {
-
-    }
+    
 
     clearAllReadSelection() {
         let time = 0;
@@ -211,22 +209,7 @@ export class AppComponent {
             }            
         }   
     }
-    insertBlankRow(name ,duration,time) {
-        this.createArray(new ReadData(name ,duration,time,false,false,time));
-    }
-
-    checkBlankAudio(prev,pres,fur) {
-        if(prev && fur) {
-            let preEndtime = +((+prev.time + +prev.duration).toFixed(3)) ;
-            if(+(+prev.time + +prev.duration).toFixed(3)!= +pres.time) {
-                let duration = (pres.time  - +preEndtime).toFixed(3);
-                this.insertBlankRow("",duration,preEndtime);    
-            }
-        } 
-        if(!prev) {
-            this.insertBlankRow("",pres.time,0);    
-        }
-    }
+    
     createArray(newrow) {
         this.realdata = [...this.realdata,newrow];
     }
