@@ -186,8 +186,6 @@ export class AppComponent {
         this.history.pushRow(this.realdata);
         this.clearAllReadSelection();
     }
-    
-
     clearAllReadSelection() {
         let time = 0;
         for (let i = 1, len = this.realdata.length; i < len; i += 1) { 
@@ -213,9 +211,6 @@ export class AppComponent {
     createArray(newrow) {
         this.realdata = [...this.realdata,newrow];
     }
-    saveTofirebase() {
-        
-    }
     loadAudioFile($event){
         this.music = 'http://54.226.118.162:8000/'+$event.name;
         this.realdata.splice(0,this.realdata.length+1);
@@ -224,6 +219,7 @@ export class AppComponent {
     getAndArrageData() {
         console.log('loading audio file');
         this.realdata = this.audioData.audioData;
+        console.log(this.realdata);
         this.history.pushRow(this.realdata);
     }
     saveDataFirebase() {

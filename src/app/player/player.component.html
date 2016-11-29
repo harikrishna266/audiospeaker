@@ -5,6 +5,7 @@
     </md-card>
 </div>
 <div class="app-content">
+    {{audioLoader}}
     <md-card *ngIf="audioLoader">
         <button md-raised-button color="primary" [disabled]="playing"  (click)="play()">Play</button>
         <button md-raised-button color="primary" [disabled]="!playing"  (click)="stop()">Stop</button>
@@ -12,9 +13,7 @@
         <button md-raised-button color="primary" [disabled]="!paused"  (click)="resume()">resume</button>
         <button md-raised-button color="primary" [disabled]="recording" (click)="record()">Record</button>
         <button md-raised-button color="primary" [disabled]="!recording" (click)="stopRecord()">Stop Record</button>
-
     </md-card>
     <md-card *ngIf="!audioLoader">
-        Audio loading.....
     </md-card>
 </div>

@@ -14,34 +14,27 @@ export class AudioDataService {
   addData(data) {
     for (let i = 0, len = data.length; i < len; i += 1) { 
       let d = data[i];
-      let dur = (d.e - d.s)/1000;
-      let start = d.s/1000;
+      let dur = (d.e - d.s);
+      let start = d.s;
+      let prev = data[i-1];
+      let next = data[i+1];
+      this.checkEmptyBlock(prev,d,next);
       this.audioData.push(new ReadData(d.w ,dur,start,false,false,start))
     }
+    console.log(this.audioData);
   }
-  // checkBlankAudio(prev,pres,fur) {
-  //     let PREtime = 0;;
-  //       if(prev && fur) {
-  //         let PREVduration = (prev.e - prev.s)/1000;
-  //         let PREVstart = prev.s/1000;
-  //         PREtime = +(pres.s/1000).toFixed(2);
-  //           let preEndtime = PREVstart + PREVduration;
-  //           preEndtime = +preEndtime.toFixed(2);
-  //           console.log(preEndtime,PREtime);
-  //           if(preEndtime!= PREtime) {
+  checkEmptyBlock(prev,d,next) {
+    
+    if(!prev)
+      this.audioData.push(new ReadData('' ,next.s,0,false,false,0))
+    else {
+      if(prev.e != d.s){
+        let duration = d.s - prev.e;
+        this.audioData.push(new ReadData('' ,duration,prev.e,false,false,prev.e))
+      }
+    }
+  }
 
-  //               let duration = (PREtime  - +preEndtime).toFixed(3);
-  //               this.insertBlankRow("",duration,preEndtime);    
-  //           }
-  //       } 
-  //       if(!prev) {
-  //           this.insertBlankRow("",PREtime,0);    
-  //       }
-  //   }
-  
-  // insertBlankRow(name ,duration,time) {
-  //       this.audioData.push(new ReadData(name ,duration,time,false,false,time));
-  // }
   saveWordsToFirebase() {
     this.af.database.object(`words/${this.audioId}`).set(this.audioData);
   }

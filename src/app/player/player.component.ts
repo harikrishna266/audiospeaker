@@ -57,14 +57,14 @@ export class PlayerComponent {
 
     loadAudio() {
         var request = new XMLHttpRequest();
-        console.log(this.audioUrl);
         request.open('GET', this.audioUrl, true);
         request.responseType = 'arraybuffer';
         request.onload = () => {
-            this.context.decodeAudioData(request.response,(buffer) => {
+             this.context.decodeAudioData(request.response,(buffer) => {
                 this.audioBuffer  = buffer.getChannelData(0);   
                 this.createNewEmptyBuffer();
-                this.audioLoader =true;
+                   this.audioLoader = true;
+                     
             });
         }
         request.send();
@@ -80,12 +80,13 @@ export class PlayerComponent {
     
     createNewEmptyBuffer() {
         let audioLength     = this.getBufferLength();
-        this.PlayableBuffer = this.context.createBuffer(1, this.context.sampleRate*audioLength,this.context.sampleRate);
+        console.log(audioLength);
+        this.PlayableBuffer = this.context.createBuffer(1, this.context.sampleRate*audioLength/1000,this.context.sampleRate);
         this.LoadDataIntoEmptyBuffer();
     }
     pushToBuffer(index,time) {
-        let framestart =  (Number(this.context.sampleRate)* Number(time.time))|0;
-        let frameend =  (Number(this.context.sampleRate)*(Number(time.time) + Number(time.duration)))|0;
+        let framestart =  this.context.sampleRate* time.time;
+        let frameend =  (this.context.sampleRate*time.time) + time.duration;
         for (let i = framestart; i < frameend; i++) {
             this.nowBuffering[this.nowBufferingIndex]  = this.audioBuffer[i];
             this.nowBufferingIndex++;
@@ -141,8 +142,8 @@ export class PlayerComponent {
         let highlightEndTime = ((EndTimeForTimeer - StartTimeForTimeer));
         setTimeout(() => {
             this.stop();
-        },highlightEndTime*1000)
-        console.log(highlightEndTime*1000);
+        },highlightEndTime)
+        console.log(highlightEndTime);
         this.play(startTime,0,this.dragStartIndex,duration);
     }
     playFromSelection() {
@@ -154,7 +155,7 @@ export class PlayerComponent {
         let len = 0;
         let offset = (startFrom==0)?0:this.soundtimestamps[startFrom]['setTime'];
         for (k, len = this.soundtimestamps.length; k < len; k += 1) { 
-            let id = setTimeout(this.starthightlighting, (this.soundtimestamps[k]['setTime']-offset)*1000,{track:this.soundtimestamps[k],index:k,obser:this.timestampemit,context:this.context});
+            let id = setTimeout(this.starthightlighting, (this.soundtimestamps[k]['setTime']-offset),{track:this.soundtimestamps[k],index:k,obser:this.timestampemit,context:this.context});
             this.timeOutId.push(id);
         }
     }
