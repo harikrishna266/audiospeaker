@@ -217,9 +217,7 @@ export class AppComponent {
         this.getAndArrageData();
     }
     getAndArrageData() {
-        console.log('loading audio file');
         this.realdata = this.audioData.audioData;
-        console.log(this.realdata);
         this.history.pushRow(this.realdata);
     }
     saveDataFirebase() {

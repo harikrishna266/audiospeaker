@@ -64,7 +64,6 @@ export class PlayerComponent {
                 this.audioBuffer  = buffer.getChannelData(0);   
                 this.createNewEmptyBuffer();
                    this.audioLoader = true;
-                     
             });
         }
         request.send();
@@ -75,22 +74,23 @@ export class PlayerComponent {
     getBufferLength() {
         if(!this.soundtimestamps) return;
         let lastElement  = this.soundtimestamps[this.soundtimestamps.length-1];
-        return Math.ceil(Number(lastElement.time)+ Number(lastElement.duration));
+        return (lastElement.time + lastElement.duration);
     }
     
     createNewEmptyBuffer() {
         let audioLength     = this.getBufferLength();
-        console.log(audioLength);
         this.PlayableBuffer = this.context.createBuffer(1, this.context.sampleRate*audioLength/1000,this.context.sampleRate);
         this.LoadDataIntoEmptyBuffer();
     }
     pushToBuffer(index,time) {
-        let framestart =  this.context.sampleRate* time.time;
-        let frameend =  (this.context.sampleRate*time.time) + time.duration;
+        let framestart =  this.context.sampleRate* time.time/1000;
+        let frameend =  ((this.context.sampleRate*time.time) + time.duration)/1000;
+
         for (let i = framestart; i < frameend; i++) {
             this.nowBuffering[this.nowBufferingIndex]  = this.audioBuffer[i];
             this.nowBufferingIndex++;
         }
+        console.log(this.nowBuffering);
     }
     LoadDataIntoEmptyBuffer() {
         this.nowBuffering = this.PlayableBuffer.getChannelData(0);
@@ -114,20 +114,20 @@ export class PlayerComponent {
         this.timeOutId = [];
     }
     stop() {
-        this.nowBufferingIndex = 0;
-        try {
-            if(this.playing) {
-                this.source.stop();
-                this.playing = false    
-            }   
-            this.paused = false;
-            this.context.resume();
-            this.clearAllSelection.emit(1);
-            this.reorderBuffer();
-            this.clearTimeOut();
-            console.log('stoped');
-        } catch(e) {
-         }
+        // this.nowBufferingIndex = 0;
+        // try {
+        //     if(this.playing) {
+        //         this.source.stop();
+        //         this.playing = false    
+        //     }   
+        //     this.paused = false;
+        //     this.context.resume();
+        //     this.clearAllSelection.emit(1);
+        //     this.reorderBuffer();
+        //     this.clearTimeOut();
+        //     console.log('stoped');
+        // } catch(e) {
+        //  }
         
     }
     starthightlighting(track) {
@@ -184,10 +184,11 @@ export class PlayerComponent {
     play(start=0,end=0,highlight=0,duration=null) {
         this.playing = true;
         this.highlight(highlight);
-        if(duration)
-            this.source.start(0,start,duration); 
-        else
-            this.source.start(0,start); 
+        //if(duration)
+        console.log('start playing');
+            this.source.start(); 
+        // else
+        //     this.source.start(0,start); 
     }
     pause() {
         this.paused = true;
