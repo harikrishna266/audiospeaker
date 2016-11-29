@@ -186,6 +186,9 @@ export class AppComponent {
         this.history.pushRow(this.realdata);
         this.clearAllReadSelection();
     }
+    reloadData() {
+
+    }
 
     clearAllReadSelection() {
         let time = 0;
@@ -228,16 +231,14 @@ export class AppComponent {
         this.realdata = [...this.realdata,newrow];
     }
     loadAudioFile($event){
-        console.log($event);
         this.music = 'http://54.226.118.162:8000/'+$event.name;
-       // this.music = './assets/audio.mp3';
-       console.log(this.music);
+        this.realdata.splice(0,this.realdata.length+1);
         this.getAndArrageData();
     }
     getAndArrageData() {
-        for (let i = 0, len = this.audioData.audioData.words.length; i < len; i += 1) { 
-            this.checkBlankAudio(this.audioData.audioData.words[i-1],this.audioData.audioData.words[i],this.audioData.audioData.words[i+1]);     
-            this.createArray(new ReadData(this.audioData.audioData.words[i]['name'] ,this.audioData.audioData.words[i]['duration'],this.audioData.audioData.words[i]['time'],false,false,this.audioData.audioData.words[i]['time']));
+        for (let i = 0, len = this.audioData.audioData.length; i < len; i += 1) { 
+            this.checkBlankAudio(this.audioData.audioData[i-1],this.audioData.audioData[i],this.audioData.audioData[i+1]);     
+            this.createArray(new ReadData(this.audioData.audioData[i]['name'] ,this.audioData.audioData[i]['duration'],this.audioData.audioData[i]['time'],false,false,this.audioData.audioData[i]['time']));
          }
          this.history.pushRow(this.realdata);
     }

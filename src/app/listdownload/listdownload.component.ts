@@ -18,6 +18,7 @@ declare const navigator:any;
 export class ListdownloadComponent {
     public loader:boolean = false;
     public audioRef: any;
+    public loadingAUdio:boolean = false;
     @Output() loadNewAudio = new EventEmitter();
     constructor(private http: Http,public af: AngularFire, public audioSer: AudioDataService) {
         this.audioRef = af.database.list('/audio');
@@ -34,9 +35,11 @@ export class ListdownloadComponent {
                 let audioPromise = [this.rawpost(file),this.uploadToServer(file)];
                 Promise.all(audioPromise)
                     .then(res => {
+                        console.log(res);
                         let data: any = res[0];
                         this.loader = false;
                         data.name = res[1];
+                        
                         this.saveFileDetailsFirebase({mediaid: data.mediaId,name: data.name,status: data.status});
                     })
             }
@@ -66,8 +69,11 @@ export class ListdownloadComponent {
         });
     }
     loadAudio(audio) {
+        this.audioSer.resetWords();
+        this.loadingAUdio = true;
         this.getTimeStampFromFirebase(audio)
             .subscribe((res:any) =>{
+                this.loadingAUdio = false;
                this.audioSer.addData(res.word);
                this.loadNewAudio.next(audio);
             })
@@ -77,7 +83,7 @@ export class ListdownloadComponent {
     }
     getAudioJson(audio) {
         
-        let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaId}/transcripts/latest`;
+        let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaid}/transcripts/latest`;
         return new Promise(function (res,rej) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
@@ -97,7 +103,7 @@ export class ListdownloadComponent {
         });
     }
     checkStatus(audio) {
-        let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaId}/`;
+        let path = `https://apis.voicebase.com/v2-beta/media/${audio.mediaid}/`;
         new Promise(function (res,rej) {
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
@@ -117,8 +123,10 @@ export class ListdownloadComponent {
             xhr.send();
         }).then((res: any) => {
             if(res.media.status =="finished") {
-                this.af.database.object(`audio/${audio.$key}/`)
-                .update(res);
+
+               let update =  {mediaid: res.mediaId,name: res.name,status: res.status}
+                this.af.database.object(`audio/${audio.$key}`)
+                .update({'status': res.media.status});
                 this.getAudioJson(audio)
                     .then((timestamp: any) => {
                         let savedata: any;

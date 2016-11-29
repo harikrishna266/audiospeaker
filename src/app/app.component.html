@@ -1,8 +1,9 @@
-<md-sidenav-layout>
-    <md-toolbar color="primary">
+<md-toolbar color="primary">
         <md-icon><i class="material-icons icon-20">playlist_play</i>
         </md-icon>Audio Editor
     </md-toolbar>
+<md-sidenav-layout>
+    
      <app-player #PlayerComponent *ngIf="realdata" [dragStartIndex]="dragStartIndex" [dragEndIndex]="dragEndIndex" (clearAllSelection)="clearAllReadSelection()" (newrecording)="pushtoRecording($event)" (timestampemit)="speechhightlight($event)"  [setTimeoutStart]="lastSelected" [audioUrl]='music' [soundtimestamps]="realdata" ></app-player>
         <context-menu #basicMenu>
           <template contextMenuItem (execute)="showMessage('playselection')">
@@ -37,6 +38,9 @@
                 <div *ngIf="item.empty==true" style="clear: both;height:20px">
                   </div>
                 </template>
+            </p>
+            <p *ngIf="realdata.length<1">
+            CHOOSE AND AUDIO FILE!
             </p>
         </md-card>
         </form>

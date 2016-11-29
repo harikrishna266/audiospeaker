@@ -4,13 +4,14 @@ import { Injectable } from '@angular/core';
 export class AudioDataService {
 
 
-  public audioData : any = {"words": []};
+  public audioData :Array <any> = [];
 
   addData(data) {
+    this.audioData = [];
     for(let d of data ) {
       let dur = (d.e - d.s)/1000;
       let start = d.s/1000;
-      this.audioData.words.push({
+      this.audioData.push({
         "duration": dur, 
         "confidence": d.c,
         "name": d.w, 
@@ -19,5 +20,11 @@ export class AudioDataService {
     }
   }
 
-
+  resetWords() {
+    this.audioData = [];
+    console.log('resetting');
+    this.audioData.slice(0,100);
+    console.log(this.audioData);
+    
+  }
 }

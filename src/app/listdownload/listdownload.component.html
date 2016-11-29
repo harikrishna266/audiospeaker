@@ -4,8 +4,8 @@
     <md-grid-list cols="1"  rowHeight="100px" [style.background]="'lightblue'" >
         <md-grid-tile>
             <md-spinner *ngIf="loader"></md-spinner>
-            <input type="file" name="media" (change)="fileChange($event)" placeholder="Upload file" accept=".mp3"/>
-            <input type="hidden" name="configuration" value='{"configuration":{"executor":"v2"}}'>
+            <input type="File" name="media" id="meddia" (change)="fileChange($event)" placeholder="Upload file" />
+            <input type="hidden" name="configuration" value='{"configuration":{"executor":"v2"}}'> 
         </md-grid-tile>
     </md-grid-list>
 </form>
@@ -13,6 +13,7 @@
 <h3 md-subheader>Audio Files</h3>
 <md-divider></md-divider>
 <md-list >
+    <p *ngIf="loadingAUdio">loading....</p>
     <md-list-item  class="listaudio" *ngFor="let red of audioRef|async; let i =index" >
         <p md-line  > {{red.name}}</p>
         <p md-line>  
