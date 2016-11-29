@@ -1,30 +1,55 @@
 import { Injectable } from '@angular/core';
+import {ReadData} from './models/readData';
+import { AngularFire } from 'angularfire2';
 
 @Injectable()
 export class AudioDataService {
 
 
-  public audioData :Array <any> = [];
+  public audioData :Array<ReadData> = [];
+  public audioId: string;
+  constructor(public af: AngularFire) {
 
+  }
   addData(data) {
-    this.audioData = [];
-    for(let d of data ) {
+    for (let i = 0, len = data.length; i < len; i += 1) { 
+      let d = data[i];
       let dur = (d.e - d.s)/1000;
       let start = d.s/1000;
-      this.audioData.push({
-        "duration": dur, 
-        "confidence": d.c,
-        "name": d.w, 
-        "time": start
-      })
+      let pre = data[i-1];
+      let next = data[i+1];
+      this.checkBlankAudio(pre,d,next);
+      this.audioData.push(new ReadData(d.w ,dur,start,false,false,start))
     }
   }
+  checkBlankAudio(prev,pres,fur) {
+      let PREtime = 0;;
+        if(prev && fur) {
+          let PREVduration = (prev.e - prev.s)/1000;
+          let PREVstart = prev.s/1000;
+          PREtime = +(pres.s/1000).toFixed(2);
+            let preEndtime = PREVstart + PREVduration;
+            preEndtime = +preEndtime.toFixed(2);
+            console.log(preEndtime,PREtime);
+            if(preEndtime!= PREtime) {
 
-  resetWords() {
-    this.audioData = [];
-    console.log('resetting');
-    this.audioData.slice(0,100);
+                let duration = (PREtime  - +preEndtime).toFixed(3);
+                this.insertBlankRow("",duration,preEndtime);    
+            }
+        } 
+        if(!prev) {
+            this.insertBlankRow("",PREtime,0);    
+        }
+    }
+  
+  insertBlankRow(name ,duration,time) {
+        this.audioData.push(new ReadData(name ,duration,time,false,false,time));
+  }
+  saveWordsToFirebase() {
     console.log(this.audioData);
-    
+    this.af.database.object(`words/${this.audioId}`).set(this.audioData);
+  }
+  resetWords() {
+     this.audioData.splice(0,this.audioData.length); 
   }
 }

@@ -80,7 +80,6 @@ export class PlayerComponent {
     
     createNewEmptyBuffer() {
         let audioLength     = this.getBufferLength();
-        console.log(1, this.context.sampleRate*audioLength,this.context.sampleRate);
         this.PlayableBuffer = this.context.createBuffer(1, this.context.sampleRate*audioLength,this.context.sampleRate);
         this.LoadDataIntoEmptyBuffer();
     }
@@ -127,8 +126,7 @@ export class PlayerComponent {
             this.clearTimeOut();
             console.log('stoped');
         } catch(e) {
-            console.log(e);
-        }
+         }
         
     }
     starthightlighting(track) {

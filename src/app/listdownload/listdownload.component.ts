@@ -20,6 +20,7 @@ export class ListdownloadComponent {
     public audioRef: any;
     public loadingAUdio:boolean = false;
     @Output() loadNewAudio = new EventEmitter();
+    @Output() firstLoadSaveData = new EventEmitter();
     constructor(private http: Http,public af: AngularFire, public audioSer: AudioDataService) {
         this.audioRef = af.database.list('/audio');
     }
@@ -35,7 +36,6 @@ export class ListdownloadComponent {
                 let audioPromise = [this.rawpost(file),this.uploadToServer(file)];
                 Promise.all(audioPromise)
                     .then(res => {
-                        console.log(res);
                         let data: any = res[0];
                         this.loader = false;
                         data.name = res[1];
@@ -73,8 +73,8 @@ export class ListdownloadComponent {
         this.loadingAUdio = true;
         this.getTimeStampFromFirebase(audio)
             .subscribe((res:any) =>{
-                this.loadingAUdio = false;
-               this.audioSer.addData(res.word);
+               this.loadingAUdio = false;
+               this.audioSer.audioData = res;
                this.loadNewAudio.next(audio);
             })
     }
@@ -123,7 +123,6 @@ export class ListdownloadComponent {
             xhr.send();
         }).then((res: any) => {
             if(res.media.status =="finished") {
-
                let update =  {mediaid: res.mediaId,name: res.name,status: res.status}
                 this.af.database.object(`audio/${audio.$key}`)
                 .update({'status': res.media.status});
@@ -131,11 +130,11 @@ export class ListdownloadComponent {
                     .then((timestamp: any) => {
                         let savedata: any;
                         savedata = {word:timestamp.audio.transcript.words, id: audio.$key}
-                        this.af.database.object(`words/${audio.$key}`).set(savedata);
+                        this.audioSer.addData(timestamp.audio.transcript.words);
+                        this.audioSer.audioId = audio.$key;
+                        this.audioSer.saveWordsToFirebase();
                     }) 
             }
-            
-                
         });
     }
     rawpost(data:any) {

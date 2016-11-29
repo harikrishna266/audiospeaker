@@ -27,9 +27,13 @@
           <template contextMenuItem (execute)="showMessage('undo')">
             Undo
           </template>
+          <template contextMenuItem (execute)="saveTofirebase('undo')">
+            Save this to firebase
+          </template>
         </context-menu>
 
     <div class="app-content">
+
         <form autocomplete="off" >
         <md-card  *ngIf="realdata" class="wordHolder"  [contextMenu]="basicMenu"  [contextMenuSubject]="items">
             <p class="noselect" (click)="showOptions()" >
@@ -52,7 +56,7 @@
             <md-tab>
                 <template md-tab-label>Audio</template>
                 <template md-tab-content>
-                    <app-listdownload (loadNewAudio)="loadAudioFile($event);"></app-listdownload>
+                    <app-listdownload (loadNewAudio)="loadAudioFile($event);" (firstLoadSaveData)='saveDataFirebase()'></app-listdownload>
                 </template>
             </md-tab>
             <md-tab>

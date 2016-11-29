@@ -60,13 +60,13 @@ export class AppComponent {
          this.realdata = [];   
     }
     undo() {
-        console.log(this.history.history.length);
-        if(this.history.history.length>2) {
-            this.realdata = this.history.history[this.history.history.length-2];
-        } 
-        if(this.history.history.length==2) {
-            this.realdata = this.history.history[0];
-        }
+        // console.log(this.history.history.length);
+        // if(this.history.history.length>2) {
+        //     this.realdata = this.history.history[this.history.history.length-2];
+        // } 
+        // if(this.history.history.length==2) {
+        //     this.realdata = this.history.history[0];
+        // }
     }
     clickEvent(data: ReadData) {
         data.hightlight = !data.hightlight; 
@@ -230,17 +230,21 @@ export class AppComponent {
     createArray(newrow) {
         this.realdata = [...this.realdata,newrow];
     }
+    saveTofirebase() {
+        
+    }
     loadAudioFile($event){
         this.music = 'http://54.226.118.162:8000/'+$event.name;
         this.realdata.splice(0,this.realdata.length+1);
         this.getAndArrageData();
     }
     getAndArrageData() {
-        for (let i = 0, len = this.audioData.audioData.length; i < len; i += 1) { 
-            this.checkBlankAudio(this.audioData.audioData[i-1],this.audioData.audioData[i],this.audioData.audioData[i+1]);     
-            this.createArray(new ReadData(this.audioData.audioData[i]['name'] ,this.audioData.audioData[i]['duration'],this.audioData.audioData[i]['time'],false,false,this.audioData.audioData[i]['time']));
-         }
-         this.history.pushRow(this.realdata);
+        console.log('loading audio file');
+        this.realdata = this.audioData.audioData;
+        this.history.pushRow(this.realdata);
+    }
+    saveDataFirebase() {
+        this.af.database.object('/word/${this.audioData.audioId}/word').set(this.realdata)
     }
 
 }
