@@ -85,13 +85,10 @@ export class PlayerComponent {
     pushToBuffer(index,time) {
         let framestart =  (this.context.sampleRate * time.time/1000|0);
         let frameend =  ((this.context.sampleRate * (time.time+ time.duration)/1000)|0);
-
-        
         for (let i = framestart; i < frameend; i++) {
             this.nowBuffering[this.nowBufferingIndex]  = this.audioBuffer[i];
             this.nowBufferingIndex++;
         }
-        console.log(this.nowBufferingIndex++);
     }
     LoadDataIntoEmptyBuffer() {
         this.nowBuffering = this.PlayableBuffer.getChannelData(0);
@@ -149,7 +146,8 @@ export class PlayerComponent {
     }
     playFromSelection() {
         let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
-        this.play(startTime,0,this.dragStartIndex);
+        console.log(startTime,0,this.dragStartIndex);
+        this.play(startTime/1000,0,this.dragStartIndex);
     }
     highlight(startFrom) {
         let k = startFrom;
