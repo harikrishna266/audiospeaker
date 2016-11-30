@@ -26,7 +26,7 @@ export class AudioDataService {
   checkEmptyBlock(prev,d,next) {
     
     if(!prev)
-      this.audioData.push(new ReadData('' ,next.s,0,false,false,0))
+      this.audioData.push(new ReadData('' ,d.s,0,false,false,0))
     else {
       if(prev.e != d.s){
         let duration = d.s - prev.e;
