@@ -46,6 +46,7 @@ export class PlayerComponent {
         if(this.audioBuffer) {
             if(changes.soundtimestamps && changes.soundtimestamps.currentValue) {
                 this.soundtimestamps = changes.soundtimestamps.currentValue;
+                console.log(this.soundtimestamps);
                 this.clearTimeOut();
             }
         }
@@ -133,10 +134,12 @@ export class PlayerComponent {
         track.obser.emit(track.track.time);
     }
     playselection() {
-        let startTime = this.soundtimestamps[this.dragStartIndex+1]['time'];
-        let EndTime = this.soundtimestamps[this.dragEndIndex+1]['time'];
-        let EndTimeForTimeer = this.soundtimestamps[this.dragEndIndex]['time'];
-        let StartTimeForTimeer = this.soundtimestamps[this.dragStartIndex]['time'];
+        console.log(this.dragStartIndex);
+        console.log(this.soundtimestamps[this.dragStartIndex+1]);
+        let startTime = this.soundtimestamps[this.dragStartIndex+1]['setTime'];
+        let EndTime = this.soundtimestamps[this.dragEndIndex+1]['setTime'];
+        let EndTimeForTimeer = this.soundtimestamps[this.dragEndIndex]['setTime'];
+        let StartTimeForTimeer = this.soundtimestamps[this.dragStartIndex]['setTime'];
         let duration = EndTime - startTime;
         let highlightEndTime = ((EndTimeForTimeer - StartTimeForTimeer));
         
@@ -146,8 +149,9 @@ export class PlayerComponent {
         this.play(startTime/1000,0,this.dragStartIndex,duration/1000);
     }
     playFromSelection() {
-        let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
-        console.log(startTime,0,this.dragStartIndex);
+        console.log(this.dragStartIndex);
+        console.log(this.soundtimestamps[this.dragStartIndex+1]);
+        let startTime = this.soundtimestamps[this.dragStartIndex]['setTime'];
         this.play(startTime/1000,0,this.dragStartIndex);
     }
     Firebase() {
