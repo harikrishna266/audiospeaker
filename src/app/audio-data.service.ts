@@ -8,9 +8,7 @@ export class AudioDataService {
 
   public audioData :Array<ReadData> = [];
   public audioId: string;
-  constructor(public af: AngularFire) {
-
-  }
+  constructor(public af: AngularFire) {}
   addData(data) {
     for (let i = 0, len = data.length; i < len; i += 1) { 
       let d = data[i];
@@ -21,10 +19,8 @@ export class AudioDataService {
       this.checkEmptyBlock(prev,d,next);
       this.audioData.push(new ReadData(d.w ,dur,start,false,false,start))
     }
-    console.log(this.audioData);
   }
   checkEmptyBlock(prev,d,next) {
-    
     if(!prev)
       this.audioData.push(new ReadData('' ,d.s,0,false,false,0))
     else {
@@ -37,6 +33,9 @@ export class AudioDataService {
 
   saveWordsToFirebase() {
     this.af.database.object(`words/${this.audioId}`).set(this.audioData);
+  }
+  updateWordsToFirebase(){
+    this.af.database.object(`words/${this.audioId}`).update(this.audioData);  
   }
   resetWords() {
      this.audioData.splice(0,this.audioData.length); 

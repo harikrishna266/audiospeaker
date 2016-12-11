@@ -74,6 +74,7 @@ export class ListdownloadComponent {
         this.getTimeStampFromFirebase(audio)
             .subscribe((res:any) =>{
                this.loadingAUdio = false;
+               this.audioSer.audioId = audio.$key;
                this.audioSer.audioData = res;
                this.loadNewAudio.next(audio);
             })
@@ -129,8 +130,9 @@ export class ListdownloadComponent {
                 this.getAudioJson(audio)
                     .then((timestamp: any) => {
                         let savedata: any;
-                        savedata = {word:timestamp.audio.transcript.words, id: audio.$key}
-                        this.audioSer.addData(timestamp.audio.transcript.words);
+                        console.log(timestamp.audio.transcripts.latest.words);
+                        savedata = {word:timestamp.audio.transcripts.latest.words, id: audio.$key}
+                        this.audioSer.addData(timestamp.audio.transcripts.latest.words);
                         this.audioSer.audioId = audio.$key;
                         this.audioSer.saveWordsToFirebase();
                     }) 

@@ -2,6 +2,7 @@ import { Component, OnInit,EventEmitter,Output,Input} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
 import {DomSanitizer} from '@angular/platform-browser';
 import {VisualiserComponent} from '../visualiser/visualiser.component';
+import {AudioDataService} from '../audio-data.service';
 
 
 declare const Recorder: any;
@@ -38,7 +39,7 @@ export class PlayerComponent {
     public recording: boolean = false;
     public paused: boolean = false;
     public audioLoader:boolean = false;
-    constructor(public sanitizer: DomSanitizer ) {
+    constructor(public sanitizer: DomSanitizer,public audSer: AudioDataService ) {
         this.context = new (window.AudioContext || window.webkitAudioContext)(); // define audio context
     }
     ngOnChanges(changes) {
@@ -132,7 +133,7 @@ export class PlayerComponent {
         track.obser.emit(track.track.time);
     }
     playselection() {
-        let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
+        let startTime = this.soundtimestamps[this.dragStartIndex+1]['time'];
         let EndTime = this.soundtimestamps[this.dragEndIndex+1]['time'];
         let EndTimeForTimeer = this.soundtimestamps[this.dragEndIndex]['time'];
         let StartTimeForTimeer = this.soundtimestamps[this.dragStartIndex]['time'];
@@ -142,12 +143,15 @@ export class PlayerComponent {
         setTimeout(() => {
             this.stop();
         },highlightEndTime)
-        this.play(startTime,0,this.dragStartIndex,duration);
+        this.play(startTime/1000,0,this.dragStartIndex,duration/1000);
     }
     playFromSelection() {
         let startTime = this.soundtimestamps[this.dragStartIndex]['time'];
         console.log(startTime,0,this.dragStartIndex);
         this.play(startTime/1000,0,this.dragStartIndex);
+    }
+    Firebase() {
+        this.audSer.updateWordsToFirebase();
     }
     highlight(startFrom) {
         let k = startFrom;
